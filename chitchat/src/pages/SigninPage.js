@@ -13,6 +13,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { SignInContainer } from '../views/styles';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -49,14 +51,15 @@ export default function SigninPage() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',
+            backgroundImage: 'url(https://static.vecteezy.com/system/resources/previews/002/240/543/original/people-chatting-in-messenger-or-social-network-internet-communication-online-instant-messaging-or-information-exchange-illustration-in-flat-cartoon-style-vector.jpg)',
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-          }}
-        />
+          }}>
+          </Grid>
+        
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -67,12 +70,17 @@ export default function SigninPage() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Typography variant="h3" component="h2" color="primary" mb={5} style={{textDecoration: "underline"}}>
+              CHITCHAT
+            </Typography>
+            <SignInContainer>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+            </SignInContainer>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
@@ -102,6 +110,7 @@ export default function SigninPage() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                href='./homepage'
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
