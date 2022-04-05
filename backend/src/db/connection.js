@@ -1,9 +1,15 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("", {
+module.exports = () => {
+const connectionParams =  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
-}).then(() =>
-{console.log("successfull");
-}).catch((e) => {console.log("not successfull", e);});
+};
+try{
+    mongoose.connect(process.env.DB, connectionParams);
+    console.log("Connected to DB")
+}
+catch(e){
+    console.log("Error while connecting to DB". e);
+}
+}
