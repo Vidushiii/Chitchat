@@ -54,10 +54,12 @@ export const SubHeading = styled.div`
 
 export const Heading = styled.div`
   font-size: ${({ size }) => (size ? size : "25px")};
+  text-decoration: ${({decoration}) => decoration && "underline"};
   line-height: 15px;
   font-family: cursive;
   color: white;
   margin-left: 10px;
+  cursor: ${({pointer}) => pointer && "pointer"};
 `;
 
 export const Header = styled.div`
@@ -68,4 +70,26 @@ export const Header = styled.div`
   border-radius: 10px;
   align-items: center;
   padding: 0px 10px;
+  margin-bottom: 30px;
 `;
+
+export const RoomInfoCard = styled.div`
+background-color: rgb(146 125 125 / 40%);
+display: flex;
+align-items: center;
+padding: 10px;
+border-radius: 10px;
+width: 300px;
+`;
+
+export const RoomLogo = styled.div`
+height: 70px;
+width: 70px;
+border: 2px solid grey;
+border-radius: 50%;
+background-position: center;
+background: ${({ url }) => (url ? `url(https://wallpaperaccess.com/full/473028.jpg)` : `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvDQhI96KOJP4eaCohSsODK8xtaWhIUbLHFw&usqp=CAU)`)};
+background-repeat: no-repeat;
+  background-size: cover;
+`;
+

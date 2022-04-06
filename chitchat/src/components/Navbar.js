@@ -12,7 +12,7 @@ const Navbar = () => {
 
         <StyledNavLink to="/">Home</StyledNavLink>
 
-        <StyledNavLink to="/">Join Room</StyledNavLink>
+        <StyledNavLink to="/joinRoom">Join Room</StyledNavLink>
       </NavbarContainer>
     </>
   );
