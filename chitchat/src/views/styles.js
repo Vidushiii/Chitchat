@@ -36,7 +36,6 @@ export const StyledNavLink = styled(NavLink)`
   }
   &:hover {
     font-weight: 600;
-
     color: blue;
   }
 `;
@@ -91,5 +90,6 @@ background-position: center;
 background: ${({ url }) => (url ? `url(https://wallpaperaccess.com/full/473028.jpg)` : `url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvDQhI96KOJP4eaCohSsODK8xtaWhIUbLHFw&usqp=CAU)`)};
 background-repeat: no-repeat;
   background-size: cover;
+  cursor: pointer;
 `;
 
