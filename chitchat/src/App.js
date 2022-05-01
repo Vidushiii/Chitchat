@@ -4,10 +4,13 @@ import SignupPage from "./pages/SignupPage";
 import HomePage from './pages/HomePage';
 import { Rooms } from "./components/Rooms";
 
+import { AuthProvider } from "./contexts/AuthContext";
+
 function App() {
   return (
     <>
       <Router>
+        <AuthProvider>
         <Routes>
           <Route
             path="/"
@@ -29,6 +32,7 @@ function App() {
            element={<Rooms />}
           />
         </Routes>
+        </AuthProvider>
       </Router>
     </>
   );
