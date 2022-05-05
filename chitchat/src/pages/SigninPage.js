@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import { useAuth } from '../contexts/AuthContext';
 
 import { SignInContainer } from '../views/styles';
 
@@ -31,15 +33,38 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SigninPage() {
-  const handleSubmit = (event) => {
+  const { signin } = useAuth();
+
+  const [email,setEmail] = useState();
+  const [password,setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    function clean() {
+      setEmail();
+      setPassword();
+    }
+    return clean;
+  },[])
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    console.log('jjjjjjjjjjjjjjjj', event);
     // eslint-disable-next-line no-console
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      email: email,
+      password: password,
     });
+    try {
+      setLoading(true);
+      await signin(email,password);
+    }
+    catch {
+      console.log('Error');
+    }
+    setLoading(false);
   };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -91,6 +116,7 @@ export default function SigninPage() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -101,6 +127,7 @@ export default function SigninPage() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -112,6 +139,8 @@ export default function SigninPage() {
                 variant="contained"
                 href='./homepage'
                 sx={{ mt: 3, mb: 2 }}
+                disables={loading}
+                onClick={(e) => handleSubmit(e)}
               >
                 Sign In
               </Button>
