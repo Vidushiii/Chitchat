@@ -1,5 +1,5 @@
 const express = require('express');
-const chats = require("./Data/data");
+const {chats} = require("./Data/data");
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.get('/chats', (req,res) => {
 // data for specific id
 
 app.get('/chats/:id', (req,res) => {
-    const singlechat = chats.map((c)=> c._id === req.params.id);
+    const singlechat = chats.find((c)=> c._id === req.params.id);
     res.send(singlechat);
 });
 

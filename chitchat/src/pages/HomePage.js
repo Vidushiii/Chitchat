@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useEffect }from "react";
+import axios from 'axios';
 import { BsArrowDownCircleFill } from "react-icons/bs";
 
 import Navbar from "../components/Navbar";
@@ -7,6 +8,14 @@ import { Rooms } from "../components/Rooms";
 import { HomeContainer, SubHeading } from "../views/styles";
 
 const HomePage = () => {
+  const fetchData = async() => {
+    const { data } = await axios.get('/chats');
+    console.log(data);
+  }
+  useEffect(() => {
+    fetchData();
+  },[])
+
   return (
     <>
       <Navbar />
