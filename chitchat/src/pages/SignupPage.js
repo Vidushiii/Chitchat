@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 import { SignInContainer } from '../views/styles';
 
@@ -30,20 +32,31 @@ function Copyright(props) {
 
 const theme = createTheme();
 
+const createUrl = (data) => {
+  console.log(data);
+  let url = URL.createObjectURL(data);
+  console.log(url);
+  return url;
+}
+
 export default function SignupPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
+    const urldata = data.get('picture');
+    //let url = createUrl(urldata);
+    
+   console.log({
       email: data.get('email'),
       password: data.get('password'),
+      
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{background: 'white'}}>
         <CssBaseline />
         <Box
           sx={{
@@ -106,6 +119,13 @@ export default function SignupPage() {
                 />
               </Grid>
               <Grid item xs={12}>
+                Upload Profile Picture ( Optional )
+              <IconButton color="primary" aria-label="upload picture" component="label">
+        <input id="picture" name="picture"  hidden accept="image/*" type="file" onChange={(e) => console.log(createUrl(e.target.files[0]))}/>
+        <PhotoCamera />
+      </IconButton>
+              </Grid>
+              <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
@@ -116,7 +136,6 @@ export default function SignupPage() {
               type="submit"
               fullWidth
               variant="contained"
-              href='./homepage'
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
