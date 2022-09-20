@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, {useState} from 'react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,14 +33,35 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SigninPage() {
-  const handleSubmit = (event) => {
+const[loading, setLoading] = useState(false);
+
+  const handleSubmit = async(event) => {
+    setLoading(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const inputData = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+    
+      const { data } = await axios.post("/api/user/login", {
+          email: inputData.get("email"),
+          password: inputData.get("password")}, config
+      );
+    
+      console.log('added', data);
+      toast.success("Logged");
+      setLoading(false);
+    
+    
+    } catch (error) {
+    toast.error(error);
+    setLoading(false);
+    }
+    
   };
 
   return (
@@ -81,7 +104,7 @@ export default function SigninPage() {
               Sign in
             </Typography>
             </SignInContainer>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -107,10 +130,10 @@ export default function SigninPage() {
                 label="Remember me"
               />
               <Button
+              loading={loading}
                 type="submit"
                 fullWidth
                 variant="contained"
-                href='./homepage'
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In

@@ -44,11 +44,7 @@ export default function SignupPage() {
 const [pic, setPic] = useState();
 const [loading, setLoading] = useState(false);
 
-var myFileInput;
-
-
 const createUrl = (picData) => {
-  myFileInput= picData;
   setLoading(true);
   if ( picData === undefined){
     toast.error('Please upload valid Image');
@@ -74,6 +70,7 @@ setLoading(false);}
     toast.error('Please upload valid Image');
   }
 };
+
   const handleSubmit = async(event) => {
     setLoading(true);
     event.preventDefault();
