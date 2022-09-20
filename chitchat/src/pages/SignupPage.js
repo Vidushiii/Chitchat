@@ -1,4 +1,6 @@
-import * as React from "react";
+import React, { useState} from "react";
+import { toast } from 'react-toastify';
+import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -37,26 +39,80 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const createUrl = (data) => {
-  console.log(data);
-  let url = URL.createObjectURL(data);
-  console.log(url);
-  return url;
-};
 
 export default function SignupPage() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    const urldata = data.get("picture");
-    //let url = createUrl(urldata);
+const [pic, setPic] = useState();
+const [loading, setLoading] = useState(false);
 
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-      picture: data.get("picture"),
-    });
+var myFileInput;
+
+
+const createUrl = (picData) => {
+  myFileInput= picData;
+  setLoading(true);
+  if ( picData === undefined){
+    toast.error('Please upload valid Image');
+    setLoading(false);
+    return ;
+  }
+  else if(picData.type === "image/png" || picData.type === "image/jpeg"){
+const data = new FormData();
+data.append("file", picData);
+data.append("upload_preset", "chitchat");
+data.append("cloud_name", "dbwmzgy06");
+fetch("https://api.cloudinary.com/v1_1/dbwmzgy06/image/upload",{
+method : 'post',
+body: data,}
+).then((res) => res.json()).then( data => {
+  setPic(data.url.toString());
+  console.log(data.url.toString());
+setLoading(false);}
+).catch((err) => {toast(err);
+  setLoading(false);});
+  }
+  else {
+    toast.error('Please upload valid Image');
+  }
+};
+  const handleSubmit = async(event) => {
+    setLoading(true);
+    event.preventDefault();
+    const inputData = new FormData(event.currentTarget);
+    inputData.set('pic', pic);
+try {
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+
+  const { data } = await axios.post("/api/user", {
+  firstName: inputData.get("firstName"),
+      lastName: inputData.get("lastName"),
+      email: inputData.get("email"),
+      password: inputData.get("password"),
+      pic: inputData.get("pic")}, config
+  );
+
+  console.log({
+    firstName: inputData.get("firstName"),
+    lastName: inputData.get("lastName"),
+    email: inputData.get("email"),
+    password: inputData.get("password"),
+    pic: inputData.get("pic"),
+  });
+
+  console.log('added', data);
+  toast.success("Authenticated");
+  setLoading(false);
+
+
+} catch (error) {
+toast.error(error);
+setLoading(false);
+}
+
+    
   };
 
   return (
@@ -81,7 +137,6 @@ export default function SignupPage() {
           </SignInContainer>
           <Box
             component="form"
-            noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
@@ -134,9 +189,10 @@ export default function SignupPage() {
                   color="primary"
                   aria-label="upload picture"
                   component="label"
+                  loading={loading}
                 >
                   <input
-                    id="picture"
+                    id="pic"
                     name="picture"
                     hidden
                     accept="image/*"

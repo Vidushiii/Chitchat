@@ -3,9 +3,9 @@ const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, pic } = req.body;
+  const { firstName, lastName, email, password, pic } = req.body;
 
-  if (!name || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400);
     throw new Error("Please fill all details");
   }
@@ -18,7 +18,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    name,
+    firstName,
+    lastName,
     email,
     password,
     pic,
@@ -27,7 +28,8 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(201).json({
       _id: user._id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       pic: user.pic,
       token: generateToken(user._id),
@@ -43,10 +45,11 @@ const authUser = asyncHandler(async (req, res) => {
 
   const userExists = await User.findOne({ email });
 
-  if (userExists && (await User.matchPassword(password))) {
+  if (userExists && (await userExists.matchPassword(password))) {
     res.json({
       _id: userExists._id,
-      name: userExists.name,
+      firstName: userExists.firstName,
+      lastName: userExists.lastName,
       email: userExists.email,
       pic: userExists.pic,
       token: generateToken(userExists._id),
