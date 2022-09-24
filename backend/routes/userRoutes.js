@@ -1,12 +1,12 @@
 const express = require("express");
-const { registerUser, authUser } = require("../controllers/userControllers");
+const { registerUser, authUser, allUsers } = require("../controllers/userControllers");
 
 // Instance on router
 const router = express.Router();
 
 // to chain multiple request
-router.route("/").post(registerUser);
+router.route("/").post(registerUser).get(allUsers); // Signup then get all users
 // // other way
-router.post("/login", authUser);
+router.post("/login", authUser); // Login
 
 module.exports = router;
