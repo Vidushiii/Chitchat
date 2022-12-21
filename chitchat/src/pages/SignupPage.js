@@ -16,8 +16,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-
 import { SignInContainer } from "../views/styles";
+import {useNavigate} from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -41,6 +41,7 @@ const theme = createTheme();
 
 
 export default function SignupPage() {
+  const navigate = useNavigate();
 const [pic, setPic] = useState();
 const [loading, setLoading] = useState(false);
 
@@ -102,7 +103,7 @@ try {
   console.log('added', data);
   toast.success("Authenticated");
   setLoading(false);
-
+  navigate('/homepage');
 
 } catch (error) {
 toast.error(error);
@@ -213,6 +214,7 @@ setLoading(false);
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              isLoading={loading}
             >
               Sign Up
             </Button>

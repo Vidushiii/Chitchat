@@ -14,6 +14,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useNavigate} from "react-router-dom";
 
 import { SignInContainer } from '../views/styles';
 
@@ -33,6 +34,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SigninPage() {
+  const navigate = useNavigate();
+
 const[loading, setLoading] = useState(false);
 
   const handleSubmit = async(event) => {
@@ -55,7 +58,7 @@ const[loading, setLoading] = useState(false);
       console.log('added', data);
       toast.success("Logged");
       setLoading(false);
-    
+      navigate('/homepage');
     
     } catch (error) {
     toast.error(error);
