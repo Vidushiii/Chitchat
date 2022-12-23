@@ -103,6 +103,7 @@ try {
   console.log('added', data);
   toast.success("Authenticated");
   setLoading(false);
+  localStorage.setItem("userInfo", JSON.stringify(data));
   navigate('/homepage');
 
 } catch (error) {

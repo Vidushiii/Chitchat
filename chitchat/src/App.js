@@ -3,11 +3,13 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from './pages/HomePage';
 import { Rooms } from "./components/Rooms";
+import ChatProvider from "./context/chatProvider";
 
 function App() {
   return (
     <>
       <Router>
+        <ChatProvider>
         <Routes>
           <Route
             path="/"
@@ -25,10 +27,11 @@ function App() {
             element={<HomePage />}
           />
           <Route 
-           path="/joinRoom"
+           path="/myChats"
            element={<Rooms />}
           />
         </Routes>
+        </ChatProvider>
       </Router>
     </>
   );

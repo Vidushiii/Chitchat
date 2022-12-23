@@ -58,6 +58,7 @@ const[loading, setLoading] = useState(false);
       console.log('added', data);
       toast.success("Logged");
       setLoading(false);
+      localStorage.setItem("userInfo", JSON.stringify(data));
       navigate('/homepage');
     
     } catch (error) {
