@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from './pages/HomePage';
-import { Rooms } from "./components/Rooms";
+import ChatPage from "./pages/ChatPage";
 import ChatProvider from "./context/chatProvider";
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
           />
           <Route 
            path="/myChats"
-           element={<Rooms />}
+           element={<ChatPage />}
           />
         </Routes>
         </ChatProvider>

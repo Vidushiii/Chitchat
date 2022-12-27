@@ -10,7 +10,6 @@ import { HomeContainer, SubHeading } from "../views/styles";
 const HomePage = () => {
   const fetchData = async() => {
     const { data } = await axios.get('/chats');
-    console.log(data);
   }
   useEffect(() => {
     fetchData();
