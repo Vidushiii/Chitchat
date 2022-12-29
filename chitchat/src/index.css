@@ -7,10 +7,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   margin-bottom: 30px;
-  padding: 20px;
   overflow-x: hidden;
   background-position: center;
-  background: url(https://images.unsplash.com/photo-1530533718754-001d2668365a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZGFyayUyMGJsdWV8ZW58MHx8MHx8&w=1000&q=80);
+  background: white;
   background-repeat: no-repeat;
   background-size: cover;
 }

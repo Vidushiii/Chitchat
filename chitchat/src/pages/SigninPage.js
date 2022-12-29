@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import { toast } from 'react-toastify';
-import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -56,13 +57,13 @@ const[loading, setLoading] = useState(false);
       );
     
       console.log('added', data);
-      toast.success("Logged");
+      
       setLoading(false);
+      toast.success("console.log");
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate('/homepage');
     
     } catch (error) {
-    toast.error(error);
     setLoading(false);
     }
     
@@ -86,7 +87,7 @@ const[loading, setLoading] = useState(false);
             backgroundPosition: 'center',
           }}>
           </Grid>
-        
+        <ToastContainer />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{

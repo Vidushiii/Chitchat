@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 import { ChatState } from "../context/chatProvider";
-import ChatBody from "../components/ChatBody";
+import MyChats from "../components/MyChats";
 import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";
 import Profile from "../components/Profile";
@@ -78,10 +78,10 @@ const ChatPage = () => {
         </TopSection>
         <h2>chatssssssssssss</h2>
         <Container>
+            {user && <MyChats />}
             {user && <ChatBox />}
-            {user && <ChatBody />}
         </Container>
-        {showSearchSidebar && <Sidebar open={showSearchSidebar} setOpen={() => setShowSearchSidebar(false)} />}
+        {showSearchSidebar && <Sidebar open={showSearchSidebar} setOpen={() => setShowSearchSidebar(false)} user={user} />}
         {showProfileModal && <Profile open={showProfileModal} setOpen={() => setShowProfileModal(false)} user={user} />}
         {showLogoutModal && <Logout open={showLogoutModal} setOpen={() => setShowLogoutModal(false)} user={user} />}
         </>
@@ -91,12 +91,13 @@ const ChatPage = () => {
 export default ChatPage;
 
 const TopSection = styled.div`
-height: 40px;
-width: 100%;
+height: 50px;
+width: 98.5%;
 background: white;
 display: flex;
 justify-content: space-between;
 align-items: center;
+padding: 5px 10px;
 `;
 
 const Search = styled.div`
@@ -114,5 +115,8 @@ gap: 10px;
 
 const Container = styled.div`
 display: flex;
-gap: 20px;
+    justify-content: space-between;
+    width: 98%;
+    height: 100%;
+    padding: 10px;
 `;
