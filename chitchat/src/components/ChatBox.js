@@ -1,9 +1,22 @@
-import React from 'react'
+import React from 'react';
+import styled from 'styled-components';
+import SingleChat from './SingleChat';
 
 function ChatBox() {
   return (
-    <div>ChatBox</div>
+    <OuterContainer><SingleChat /></OuterContainer>
   )
 }
 
 export default ChatBox;
+
+const OuterContainer = styled.div`
+border: 2px solid;
+width: 67%;
+height: 72vh;
+padding: 10px;
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+`;

@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Typography from "@mui/material/Typography";
-
+import Loading from './Loading';
+import GroupChatModal from './GroupChatModal';
 
 function MyChats() {
   const { user,
@@ -16,6 +17,7 @@ function MyChats() {
     setChats } = ChatState();
 
     const [loggedUser, setLoggedUser] = useState();
+    const [open, setOpen] = useState(false);
 
     const fetchChats = async () => {
       // console.log(user._id);
@@ -40,6 +42,10 @@ function MyChats() {
       }
     };
 
+    const getSender = (users) => {
+      return users[0]._id === loggedUser._id ? users[1].name ?  users[1].name : users[1].firstName : users[0].name ? users[0].name  : users[0].firstName
+    };
+
     useEffect(() => {
       setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
       fetchChats();
@@ -49,16 +55,17 @@ function MyChats() {
     <OuterContainer>
       <Header>
         <Typography>My Chats</Typography>
-      <Button variant="outlined" endIcon={<AddIcon />}>
+      <Button variant="outlined" endIcon={<AddIcon />} onClick={() => setOpen(true)} >
   Start Group Chat
 </Button>
       </Header>
       <ChatsContainer>
-        {chats.length > 0 && chats.map(i => 
-        <ChatCard><Typography>John</Typography>
+        {chats ? chats.map(i => 
+        <ChatCard onClick={() => setSelectedChat(i)}><Typography>{!i.isGroupChat ? getSender(i.users) : i.chatName}</Typography>
         <Typography>Msg : </Typography> {console.log(i)}</ChatCard>
-          )}
+          ) : <Loading />}
       </ChatsContainer>
+      {open && <GroupChatModal open={open} setOpen={() => setOpen(false)} /> }
       </OuterContainer>
   )
 }
@@ -67,7 +74,7 @@ export default MyChats;
 
 const OuterContainer = styled.div`
 border: 2px solid;
-width: 40%;
+width: 30%;
 height: 72vh;
 padding: 10px;
 border-radius: 10px;
@@ -94,4 +101,5 @@ const ChatCard = styled.div`
 border: 2px solid;
 border-radius: 10px;
 padding: 8px;
+cursor: pointer;
 `;

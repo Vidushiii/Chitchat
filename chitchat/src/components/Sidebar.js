@@ -60,9 +60,10 @@ function Sidebar({ open, setOpen, user }) {
 
   const getSearchResults = () => {
     let time;
+    console.log("ji")
     return () => {
       clearTimeout(time);
-      time = setTimeout(() => handleSearch(), 2000);
+      time = setTimeout(() => console.log("in"), 2000);
     };
   };
 

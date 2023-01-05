@@ -119,4 +119,5 @@ display: flex;
     width: 98%;
     height: 100%;
     padding: 10px;
+    gap: 2%;
 `;
