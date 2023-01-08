@@ -76,7 +76,6 @@ const ChatPage = () => {
             </Menu>
            </AccountSection>
         </TopSection>
-        <h2>chatssssssssssss</h2>
         <Container>
             {user && <MyChats />}
             {user && <ChatBox />}

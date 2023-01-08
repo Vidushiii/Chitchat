@@ -18,11 +18,9 @@ function Sidebar({ open, setOpen, user }) {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-  console.log("looooooooo", search);
 
   const handleSearch = async () => {
     if (!search) {
-      console.log("Please add some text!");
       return;
     }
 
@@ -60,7 +58,6 @@ function Sidebar({ open, setOpen, user }) {
 
   const getSearchResults = () => {
     let time;
-    console.log("ji")
     return () => {
       clearTimeout(time);
       time = setTimeout(() => console.log("in"), 2000);
@@ -93,9 +90,14 @@ function Sidebar({ open, setOpen, user }) {
     }
   };
 
-  const UserListItem = (data) => {
+  const UserListItem = (data, setOpen) => {
     return (
-      <UserCard onClick={() => accessChat(data._id)}>
+      <UserCard
+        onClick={() => {
+          accessChat(data._id);
+          setOpen(false);
+        }}
+      >
         <Avatar
           alt={data.name}
           src={data?.pic ? data.pic : ""}
@@ -111,30 +113,39 @@ function Sidebar({ open, setOpen, user }) {
     );
   };
 
-  console.log("serarch results", searchResult);
-
   return (
     <Drawer anchor="left" open={open} onClose={setOpen}>
       <MainContainer>
-        <Typography textAlign="center">Search User</Typography>
-        <Search>
-          <TextField
-            placeholder="Search with Name/Email!"
-            id="input-with-icon-textfield"
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            variant="standard"
-          />
-        </Search>
-        {loading ? <Loading /> : searchResult.map((i) => UserListItem(i))}
-        {loadingChat && !loading && <Loading />}
+        <Header>
+          <Typography variant="h5" textAlign="center">
+            Search User
+          </Typography>
+          <Search>
+            <TextField
+              placeholder="Search with Name/Email!"
+              id="input-with-icon-textfield"
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              style={{ width: "300px" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              variant="standard"
+            />
+          </Search>
+        </Header>
+        <BottomContainer>
+          {loading ? (
+            <Loading />
+          ) : (
+            searchResult.map((i) => UserListItem(i, setOpen))
+          )}
+          {loadingChat && !loading && <Loading />}
+        </BottomContainer>
       </MainContainer>
     </Drawer>
   );
@@ -147,6 +158,27 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 300px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: fixed;
+  background: white;
+  top: 0;
+  z-index: 1;
+  padding: 10px;
+  width: 272px;
+`;
+
+const BottomContainer = styled.div`
+  margin-top: 90px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const Search = styled.div`
@@ -162,6 +194,8 @@ const UserCard = styled.div`
   gap: 15px;
   align-items: center;
   cursor: pointer;
+  border: 2px solid;
+  border-radius: 10px;
 `;
 
 const UserDetail = styled.div`

@@ -55,11 +55,7 @@ const[loading, setLoading] = useState(false);
           email: inputData.get("email"),
           password: inputData.get("password")}, config
       );
-    
-      console.log('added', data);
-      
       setLoading(false);
-      toast.success("console.log");
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate('/homepage');
     

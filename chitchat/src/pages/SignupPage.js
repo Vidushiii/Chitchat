@@ -91,15 +91,6 @@ try {
       pic: inputData.get("pic")}, config
   );
 
-  console.log({
-    firstName: inputData.get("firstName"),
-    lastName: inputData.get("lastName"),
-    email: inputData.get("email"),
-    password: inputData.get("password"),
-    pic: inputData.get("pic"),
-  });
-
-  console.log('added', data);
   toast.success("Authenticated");
   setLoading(false);
   localStorage.setItem("userInfo", JSON.stringify(data));

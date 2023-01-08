@@ -12,10 +12,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Avatar } from "@mui/material";
-
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import { ChatState } from '../context/chatProvider';
 import axios from 'axios';
 
@@ -57,7 +53,6 @@ const GroupChatModal= ({ open, setOpen}) => {
         },
       };
       const { data } = await axios.get(`/api/user?search=${search}`, config);
-      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -103,13 +98,13 @@ const GroupChatModal= ({ open, setOpen}) => {
         <Avatar
           alt={data.name}
           src={data?.pic ? data.pic : ""}
-          sx={{ width: 40, height: 40 }}
+          sx={{ width: 30, height: 30 }}
         />
         <UserDetail>
-          <Typography>
+          <Typography variant="body1">
             {data.name ? data.name : data.firstName + " " + data.lastName}
           </Typography>
-          <Typography>{data.email}</Typography>
+          <Typography variant="body2">{data.email}</Typography>
         </UserDetail>
       </UserCard>
     );
@@ -130,7 +125,7 @@ const GroupChatModal= ({ open, setOpen}) => {
       <Fade in={open}>
         <CreateChat>
             <Header>
-          <Typography textAlign="center">Create Group Chat!</Typography>
+          <Typography variant="h5" textAlign="center">Create Group Chat!</Typography>
         <IconButton onClick={setOpen}>
   <CloseIcon />
 </IconButton>
@@ -138,6 +133,7 @@ const GroupChatModal= ({ open, setOpen}) => {
           <Box component="form" sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
+                size="small"
                 required
                 fullWidth
                 id="groupName"
@@ -145,11 +141,12 @@ const GroupChatModal= ({ open, setOpen}) => {
                 onChange={(e) => setGroupChatName(e.target.value)}
                 autoFocus
               />
-             <SelectedUsersContainer>{selectedUsers.map(user => <Button variant="contained" endIcon={<CloseIcon />} onClick={( ) => handleDelete(user)}>
+             <SelectedUsersContainer>{selectedUsers.map(user => <Button size="small" variant="contained" endIcon={<CloseIcon />} onClick={( ) => handleDelete(user)}>
   {user.name ? user.name : user.firstName}
 </Button>)}</SelectedUsersContainer>
               <TextField
                 margin="normal"
+                size="small"
                 required
                 fullWidth
                 name="groupMembers"
@@ -160,10 +157,10 @@ const GroupChatModal= ({ open, setOpen}) => {
             </Box>
             
           <SearchListContainer>
-           {loading ? <Loading dimensions="20" marginTop="5%" /> : searchResult?.slice(0,4).map(data => UserListItem(data))}
+           {loading ? <Loading dimensions="20" marginTop="5%" /> : searchResult?.map(data => UserListItem(data))}
           </SearchListContainer>
 
-          <Button onClick={() => handleSubmit()}>
+          <Button onClick={() => handleSubmit()} variant="contained">
             Create Group
           </Button>
         </CreateChat>
@@ -180,7 +177,7 @@ position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
+  width: 450px;
   border: 2px solid #726969;
   padding: 30px 30px 40px 30px;
   color: black;
@@ -193,8 +190,13 @@ position: absolute;
 
 const SearchListContainer = styled.div`
 display: flex;
-flex-direction: column;
-gap: 12px;
+
+    flex-direction: column;
+    gap: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
 `;
 
 const Header = styled.div`
@@ -206,7 +208,7 @@ display: flex;
 
 const UserCard = styled.div`
   display: flex;
-  height: 50px;
+  height: 35px;
   gap: 15px;
   align-items: center;
   cursor: pointer;
@@ -214,7 +216,7 @@ const UserCard = styled.div`
     border-radius: 15px;
     padding: 5px 0px 5px 10px;
     padding: 5px 10px;
-    width: 95%;
+    width: 92%;
 `;
 
 const UserDetail = styled.div`
@@ -224,4 +226,10 @@ const UserDetail = styled.div`
 `;
 
 const SelectedUsersContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-height: 138px;
+    overflow-y: auto;
+    overflow-x: hidden;
 `;

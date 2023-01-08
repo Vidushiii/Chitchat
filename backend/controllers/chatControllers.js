@@ -152,8 +152,10 @@ const removeFromGroup = asyncHandler(async(req,res) => {
 
   if (!removed) {
     res.status(404);
+    console.log("not removed");
     throw new error("Not removed");
   } else {
+    console.log("removed");
     res.json(removed);
   }
 })

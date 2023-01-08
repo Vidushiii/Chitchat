@@ -20,7 +20,6 @@ function MyChats() {
     const [open, setOpen] = useState(false);
 
     const fetchChats = async () => {
-      // console.log(user._id);
       try {
         const config = {
           headers: {
@@ -61,8 +60,8 @@ function MyChats() {
       </Header>
       <ChatsContainer>
         {chats ? chats.map(i => 
-        <ChatCard onClick={() => setSelectedChat(i)}><Typography>{!i.isGroupChat ? getSender(i.users) : i.chatName}</Typography>
-        <Typography>Msg : </Typography> {console.log(i)}</ChatCard>
+        <ChatCard key={i._id} onClick={() => setSelectedChat(i)}><Typography>{!i.isGroupChat ? getSender(i.users) : i.chatName}</Typography>
+        <Typography>Msg : </Typography></ChatCard>
           ) : <Loading />}
       </ChatsContainer>
       {open && <GroupChatModal open={open} setOpen={() => setOpen(false)} /> }
@@ -75,7 +74,7 @@ export default MyChats;
 const OuterContainer = styled.div`
 border: 2px solid;
 width: 30%;
-height: 72vh;
+height: 82vh;
 padding: 10px;
 border-radius: 10px;
 display: flex;
