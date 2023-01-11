@@ -7,7 +7,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
+import { Button, Input } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Avatar } from "@mui/material";
 import capitalize from "lodash.capitalize";
@@ -15,6 +15,7 @@ import { ChatState } from "../context/chatProvider";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
+import SendIcon from '@mui/icons-material/Send';
 
 const EditDetails = ({
   open,
@@ -24,11 +25,12 @@ const EditDetails = ({
   setSelectedChat,
   fetchAgain,
   setFetchAgain,
+  fetchMessages,
 }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [renameloading, setRenameLoading] = useState(false);
-  const [groupChatName, setGroupChatName] = useState();
+  const [groupChatName, setGroupChatName] = useState(capitalize(selectedChat.chatName));
   const [search, setSearch] = useState("");
 
   const handleSearch = async (query) => {
@@ -143,7 +145,7 @@ const EditDetails = ({
 
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain);
-      // fetchMessages();
+      fetchMessages();
       setLoading(false);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -186,21 +188,21 @@ const EditDetails = ({
         <ModalContainer>
           <Header>
             <Typography variant="h5" >{capitalize(selectedChat.chatName)}</Typography>
-            <CloseIcon />
+            <CloseIcon onClick={() => setOpen(false)} style={{ cursor: "pointer"}}/>
           </Header>
           <SelectedUsersContainer>
             {selectedChat &&
               selectedChat.users
                 .filter((addedUser) => addedUser._id !== user._id)
-                .map((d) => (
+                .map((userData) => (
                   <Button
-                    key={d._id}
+                    key={userData._id}
                     variant="contained"
                     size="small"
                     endIcon={<CloseIcon />}
-                    onClick={() => handleRemove(user)}
+                    onClick={() => handleRemove(userData)}
                   >
-                    {d.name ? d.name : d.firstName}
+                    {userData.name ? userData.name : userData.firstName}
                   </Button>
                 ))}
           </SelectedUsersContainer>
@@ -212,6 +214,7 @@ const EditDetails = ({
               size="small"
               id="groupName"
               placeholder="Group Name"
+              value={groupChatName}
               onChange={(e) => setGroupChatName(e.target.value)}
               autoFocus
             />
@@ -263,6 +266,64 @@ function SingleChat() {
   } = ChatState();
 
   const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState();
+
+   const sendMessage = async () => {
+    if (newMessage) {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast("Error Occured! Failed to send the Message");
+      }
+    }
+  }
+
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      setLoading(true);
+
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+      setMessages(data);
+      console.log("chat data", data)
+      setLoading(false);
+    } catch (error) {
+      toast("Failed to Load the Messages");
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  },[selectedChat]);
+
+  const typingHandler = (e) => { setNewMessage(e.target.value)};
 
   const getSender = (users) => {
     return users[0]._id === user._id
@@ -274,6 +335,7 @@ function SingleChat() {
       : users[0].firstName;
   };
 
+  console.log("selected", selectedChat)
   return selectedChat ? (
     <OuterContainer>
       {" "}
@@ -284,7 +346,7 @@ function SingleChat() {
             : getSender(selectedChat.users)}
         </Typography>{" "}
         {selectedChat.isGroupChat && (
-          <SettingsIcon onClick={() => setOpen(true)} />
+          <SettingsIcon onClick={() => setOpen(true)} style={{ cursor: "pointer"}} />
         )}{" "}
       </Header>
       {open && (
@@ -297,9 +359,19 @@ function SingleChat() {
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
           user={user}
+          fetchMessages={fetchMessages}
         />
       )}
-      SingleChat jijiji
+
+      {loading ? "loading" : 
+        <Body><ChatContainer>
+          {messages.length && messages.map(msg => <Message>{msg.content}</Message> )}
+        </ChatContainer><MessageContainer><Input placeholder="Enter a message..." onChange={typingHandler} value={newMessage} style={{ width: "100%" }} />
+            <Button variant="contained" endIcon={<SendIcon />} onClick={() => sendMessage()}>
+              Send
+            </Button>
+          </MessageContainer></Body>
+      }
     </OuterContainer>
   ) : (
     "Please select a chat"
@@ -310,6 +382,7 @@ export default SingleChat;
 
 const OuterContainer = styled.div`
   width: 100%;
+  height: 100%;
 `;
 
 const Header = styled.div`
@@ -369,4 +442,36 @@ const UserDetail = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
+`;
+
+const ChatContainer = styled.div`
+display: flex;
+flex-direction: column-reverse;
+overflow-y: scroll;
+scrollbar-width: none;
+gap: 4px;
+height: 100%;
+width: 100%;
+align-items: flex-start;
+margin-bottom: 10px;
+`;
+
+const MessageContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 2px;
+    border: 2px solid;
+`;
+
+const Body = styled.div`
+height: 97%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+`;
+
+const Message = styled.div`
+border: 2px solid;
+padding: 3px;
+border-radius: 10px;
 `;

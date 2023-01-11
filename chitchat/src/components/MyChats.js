@@ -93,7 +93,8 @@ const ChatsContainer = styled.div`
 display: flex;
     gap: 10px;
     flex-direction: column;
-    overflow: auto;
+    overflow: scroll;
+    scrollbar-width: none;
 `;
 
 const ChatCard = styled.div`

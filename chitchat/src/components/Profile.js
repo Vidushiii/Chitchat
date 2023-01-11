@@ -22,7 +22,7 @@ function Profile({ open, setOpen, user }) {
       <Fade in={open}>
         <OuterContainer>
           <Typography textAlign="center">
-            {user.firstName} {user.lastName}
+            {user.name} || {user.firstName} {user.lastName}
           </Typography>
           <Avatar
             alt={user?.firstName}
