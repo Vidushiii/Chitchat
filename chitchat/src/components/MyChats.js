@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from "@mui/material/Typography";
 import Loading from './Loading';
 import GroupChatModal from './GroupChatModal';
+import { getSender } from '../config/appLogic';
 
 function MyChats() {
   const { user,
@@ -41,10 +42,6 @@ function MyChats() {
       }
     };
 
-    const getSender = (users) => {
-      return users[0]._id === loggedUser._id ? users[1].name ?  users[1].name : users[1].firstName : users[0].name ? users[0].name  : users[0].firstName
-    };
-
     useEffect(() => {
       setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
       fetchChats();
@@ -60,7 +57,7 @@ function MyChats() {
       </Header>
       <ChatsContainer>
         {chats ? chats.map(i => 
-        <ChatCard key={i._id} onClick={() => setSelectedChat(i)}><Typography>{!i.isGroupChat ? getSender(i.users) : i.chatName}</Typography>
+        <ChatCard key={i._id} onClick={() => setSelectedChat(i)}><Typography>{!i.isGroupChat ? getSender(i.users, loggedUser) : i.chatName}</Typography>
         <Typography>Msg : </Typography></ChatCard>
           ) : <Loading />}
       </ChatsContainer>

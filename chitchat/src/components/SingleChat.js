@@ -16,6 +16,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
 import SendIcon from '@mui/icons-material/Send';
+import { getSender, isSameSender, isLastMessage } from "../config/appLogic";
 
 const EditDetails = ({
   open,
@@ -237,7 +238,7 @@ const EditDetails = ({
             )}
           </SearchListContainer>
           <Header>
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={() => handleRename()}>
               Update
             </Button>
             <Button
@@ -325,16 +326,6 @@ function SingleChat() {
 
   const typingHandler = (e) => { setNewMessage(e.target.value)};
 
-  const getSender = (users) => {
-    return users[0]._id === user._id
-      ? users[1].name
-        ? users[1].name
-        : users[1].firstName
-      : users[0].name
-      ? users[0].name
-      : users[0].firstName;
-  };
-
   console.log("selected", selectedChat)
   return selectedChat ? (
     <OuterContainer>
@@ -343,7 +334,7 @@ function SingleChat() {
         <Typography>
           {selectedChat.isGroupChat
             ? capitalize(selectedChat.chatName)
-            : getSender(selectedChat.users)}
+            : getSender(selectedChat.users, user)}
         </Typography>{" "}
         {selectedChat.isGroupChat && (
           <SettingsIcon onClick={() => setOpen(true)} style={{ cursor: "pointer"}} />
@@ -365,7 +356,14 @@ function SingleChat() {
 
       {loading ? "loading" : 
         <Body><ChatContainer>
-          {messages.length && messages.map(msg => <Message>{msg.content}</Message> )}
+          {messages.length && messages.map((msg, i) =>
+            <MessageOuterContainer>{(isSameSender(messages, msg, i, user._id) || isLastMessage(messages, i, user._id)) && <Avatar
+          alt={msg.sender.name ? msg.sender.name : msg.sender.firstName + " " + msg.sender.lastName}
+          src={msg?.sender.pic ? msg.sender.pic : ""}
+          sx={{ width: 30, height: 30 }}
+        />}<Message sameUser={!isSameSender(messages, msg, i, user._id)} key={msg._id}>
+            <Content>{msg.content}{console.log("koooooooooooo",isSameSender(messages, msg,i,user._id))}</Content>
+            </Message></MessageOuterContainer> )}
         </ChatContainer><MessageContainer><Input placeholder="Enter a message..." onChange={typingHandler} value={newMessage} style={{ width: "100%" }} />
             <Button variant="contained" endIcon={<SendIcon />} onClick={() => sendMessage()}>
               Send
@@ -471,6 +469,18 @@ height: 97%;
 `;
 
 const Message = styled.div`
+width: 100%;
+display: flex;
+justify-content: ${({ sameUser }) => sameUser ? "flex-end" : "flex-start"};
+`;
+
+const MessageOuterContainer = styled.div`
+width: 97%;
+display: flex;
+gap: 4px;
+`;
+
+const Content = styled.div`
 border: 2px solid;
 padding: 3px;
 border-radius: 10px;
