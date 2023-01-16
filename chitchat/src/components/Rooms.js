@@ -35,6 +35,7 @@ export const Rooms = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  
   return (
     <><Header>
           <Heading>Join a Room</Heading>

@@ -17,6 +17,11 @@ import { toast } from "react-toastify";
 import Loading from "./Loading";
 import SendIcon from '@mui/icons-material/Send';
 import { getSender, isSameSender, isLastMessage } from "../config/appLogic";
+import io from "socket.io-client";
+
+
+const ENDPOINT = "localhost:5000";
+var socket, selectedChatCompare;
 
 const EditDetails = ({
   open,
@@ -33,7 +38,6 @@ const EditDetails = ({
   const [renameloading, setRenameLoading] = useState(false);
   const [groupChatName, setGroupChatName] = useState(capitalize(selectedChat.chatName));
   const [search, setSearch] = useState("");
-
   const handleSearch = async (query) => {
     setSearch(query);
     if (!query) {
@@ -160,7 +164,7 @@ const EditDetails = ({
       <UserCard onClick={() => handleAddUser(data)}>
         <Avatar
           alt={data.name}
-          src={data?.pic ? data.pic : ""}
+          src={data && data.pic ? data.pic : ""}
           sx={{ width: 30, height: 30 }}
         />
         <UserDetail>
@@ -234,7 +238,7 @@ const EditDetails = ({
             {loading ? (
               <Loading dimensions="20" marginTop="5%" />
             ) : (
-              searchResult?.slice(0, 4).map((data) => <UserListItem key={data._id} data={data} />)
+              searchResult && searchResult.slice(0, 4).map((data) => <UserListItem key={data._id} data={data} />)
             )}
           </SearchListContainer>
           <Header>
@@ -270,31 +274,8 @@ function SingleChat() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
-
-   const sendMessage = async () => {
-    if (newMessage) {
-      try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        setNewMessage("");
-        const { data } = await axios.post(
-          "/api/message",
-          {
-            content: newMessage,
-            chatId: selectedChat,
-          },
-          config
-        );
-        setMessages([...messages, data]);
-      } catch (error) {
-        toast("Error Occured! Failed to send the Message");
-      }
-    }
-  }
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -313,20 +294,98 @@ function SingleChat() {
         config
       );
       setMessages(data);
-      console.log("chat data", data)
       setLoading(false);
+
+      socket.emit("joinchat", selectedChat._id);
+      
     } catch (error) {
-      toast("Failed to Load the Messages");
+      toast.error("Failed to Load the Messages");
     }
   };
 
+   const sendMessage = async () => {
+    if (newMessage) {
+      socket.emit("stop typing", selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+        setMessages([...messages, data]);
+        socket.emit("new message", data);
+      } catch (error) {
+        toast("Error Occured! Failed to send the Message");
+      }
+    }
+  }
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", (userId) => {if(userId !== user._id) setIsTyping(true);});
+    socket.on("stop typing", () => setIsTyping(false));
+
+    // eslint-disable-next-line
+  }, []);
+
   useEffect(() => {
     fetchMessages();
-  },[selectedChat]);
 
-  const typingHandler = (e) => { setNewMessage(e.target.value)};
+    selectedChatCompare = selectedChat;
+    // eslint-disable-next-line
+  }, [selectedChat]);
 
-  console.log("selected", selectedChat)
+  useEffect(() => {
+    if(socket){socket.on("message recieved", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });}
+  });
+
+  const typingHandler = (e) => { 
+    setNewMessage(e.target.value);
+
+    if (!socketConnected){
+      return
+    }
+
+    if(!isTyping){
+      socket.emit('typing', selectedChat._id, user._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && isTyping) {
+        socket.emit("stop typing", selectedChat._id);
+        setIsTyping(false);
+      }
+    }, timerLength);
+  };
+
   return selectedChat ? (
     <OuterContainer>
       {" "}
@@ -359,12 +418,15 @@ function SingleChat() {
           {messages.length && messages.map((msg, i) =>
             <MessageOuterContainer>{(isSameSender(messages, msg, i, user._id) || isLastMessage(messages, i, user._id)) && <Avatar
           alt={msg.sender.name ? msg.sender.name : msg.sender.firstName + " " + msg.sender.lastName}
-          src={msg?.sender.pic ? msg.sender.pic : ""}
+          src={msg.sender.pic ? msg.sender.pic : ""}
           sx={{ width: 30, height: 30 }}
         />}<Message sameUser={!isSameSender(messages, msg, i, user._id)} key={msg._id}>
-            <Content>{msg.content}{console.log("koooooooooooo",isSameSender(messages, msg,i,user._id))}</Content>
+            <Content>{msg.content}</Content>
             </Message></MessageOuterContainer> )}
-        </ChatContainer><MessageContainer><Input placeholder="Enter a message..." onChange={typingHandler} value={newMessage} style={{ width: "100%" }} />
+        </ChatContainer>
+        {isTyping && <div>
+          Typing</div>}
+        <MessageContainer><Input placeholder="Enter a message..." onChange={typingHandler} value={newMessage} style={{ width: "100%" }} />
             <Button variant="contained" endIcon={<SendIcon />} onClick={() => sendMessage()}>
               Send
             </Button>

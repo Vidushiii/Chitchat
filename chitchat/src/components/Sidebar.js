@@ -100,7 +100,7 @@ function Sidebar({ open, setOpen, user }) {
       >
         <Avatar
           alt={data.name}
-          src={data?.pic ? data.pic : ""}
+          src={data.pic ? data.pic : ""}
           sx={{ width: 40, height: 40 }}
         />
         <UserDetail>

@@ -50,7 +50,7 @@ const ChatPage = () => {
            <AccountSection>
             <NotificationsActiveIcon/>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={user?.firstName} src={user?.pic ? user.pic : ''} />
+                <Avatar alt={user && user.firstName} src={user && user.pic ? user.pic : ''} />
               </IconButton>
             <Menu
               sx={{ mt: '45px' }}

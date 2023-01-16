@@ -25,8 +25,8 @@ function Profile({ open, setOpen, user }) {
             {user.name} || {user.firstName} {user.lastName}
           </Typography>
           <Avatar
-            alt={user?.firstName}
-            src={user?.pic ? user.pic : ""}
+            alt={user && user.firstName}
+            src={user && user.pic ? user.pic : ""}
             sx={{ width: 100, height: 100, marginLeft: "40%" }}
           />
           <Typography textAlign="center">Email : {user.email}</Typography>

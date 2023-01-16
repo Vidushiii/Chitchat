@@ -26,13 +26,7 @@ const GroupChatModal= ({ open, setOpen}) => {
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
-      toast({
-        title: "User already added",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+      toast.error("User already added");
       return;
     }
 
@@ -97,7 +91,7 @@ const GroupChatModal= ({ open, setOpen}) => {
       <UserCard onClick={() => handleGroup(data)}>
         <Avatar
           alt={data.name}
-          src={data?.pic ? data.pic : ""}
+          src={data.pic ? data.pic : ""}
           sx={{ width: 30, height: 30 }}
         />
         <UserDetail>
@@ -157,7 +151,7 @@ const GroupChatModal= ({ open, setOpen}) => {
             </Box>
             
           <SearchListContainer>
-           {loading ? <Loading dimensions="20" marginTop="5%" /> : searchResult?.map(data => UserListItem(data))}
+           {loading ? <Loading dimensions="20" marginTop="5%" /> : searchResult && searchResult.map(data => UserListItem(data))}
           </SearchListContainer>
 
           <Button onClick={() => handleSubmit()} variant="contained">
