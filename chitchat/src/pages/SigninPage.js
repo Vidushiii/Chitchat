@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import axios from 'axios';
@@ -19,25 +19,17 @@ import {useNavigate} from "react-router-dom";
 
 import { SignInContainer } from '../views/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const theme = createTheme();
 
 export default function SigninPage() {
   const navigate = useNavigate();
 
 const[loading, setLoading] = useState(false);
+
+useEffect(() => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (userInfo) navigate("/homepage");
+}, []);
 
   const handleSubmit = async(event) => {
     setLoading(true);
@@ -94,14 +86,14 @@ const[loading, setLoading] = useState(false);
               alignItems: 'center',
             }}
           >
-            <Typography variant="h3" component="h2" color="primary" mb={5} style={{textDecoration: "underline"}}>
+            <Typography variant="h3" component="h2" color="primary" mb={5} >
               CHITCHAT
             </Typography>
             <SignInContainer>
             <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" color="primary">
               Sign in
             </Typography>
             </SignInContainer>
@@ -115,6 +107,7 @@ const[loading, setLoading] = useState(false);
                 name="email"
                 autoComplete="email"
                 autoFocus
+                style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
               />
               <TextField
                 margin="normal"
@@ -125,10 +118,7 @@ const[loading, setLoading] = useState(false);
                 type="password"
                 id="password"
                 autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
               />
               <Button
               loading={loading}
@@ -141,9 +131,9 @@ const[loading, setLoading] = useState(false);
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  {/* <Link href="#" variant="body2">
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </Grid>
                 <Grid item>
                   <Link href="./signup" variant="body2">
@@ -151,7 +141,6 @@ const[loading, setLoading] = useState(false);
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>

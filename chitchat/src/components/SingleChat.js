@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { BsChatTextFill } from "react-icons/bs";
 import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Backdrop from "@mui/material/Backdrop";
@@ -15,13 +16,23 @@ import { ChatState } from "../context/chatProvider";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from "@mui/icons-material/Send";
 import { getSender, isSameSender, isLastMessage } from "../config/appLogic";
 import io from "socket.io-client";
 
-
 const ENDPOINT = "localhost:5000";
 var socket, selectedChatCompare;
+
+const EmptyChat = () => {
+  return (
+    <EmptyContainer>
+      <BsChatTextFill style={{ color: "#1976d2", fontSize: "8em" }} />
+      <Typography variant="h5" color="primary">
+        Start Chatting!
+      </Typography>
+    </EmptyContainer>
+  );
+};
 
 const EditDetails = ({
   open,
@@ -36,7 +47,9 @@ const EditDetails = ({
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [renameloading, setRenameLoading] = useState(false);
-  const [groupChatName, setGroupChatName] = useState(capitalize(selectedChat.chatName));
+  const [groupChatName, setGroupChatName] = useState(
+    capitalize(selectedChat.chatName)
+  );
   const [search, setSearch] = useState("");
   const handleSearch = async (query) => {
     setSearch(query);
@@ -159,7 +172,7 @@ const EditDetails = ({
     setGroupChatName("");
   };
 
-  const UserListItem = ({data}) => {
+  const UserListItem = ({ data }) => {
     return (
       <UserCard onClick={() => handleAddUser(data)}>
         <Avatar
@@ -168,7 +181,7 @@ const EditDetails = ({
           sx={{ width: 30, height: 30 }}
         />
         <UserDetail>
-        <Typography variant="body1">
+          <Typography variant="body1">
             {data.name ? data.name : data.firstName + " " + data.lastName}
           </Typography>
           <Typography variant="body2">{data.email}</Typography>
@@ -192,8 +205,13 @@ const EditDetails = ({
       <Fade in={open}>
         <ModalContainer>
           <Header>
-            <Typography variant="h5" >{capitalize(selectedChat.chatName)}</Typography>
-            <CloseIcon onClick={() => setOpen(false)} style={{ cursor: "pointer"}}/>
+            <Typography variant="h5">
+              {capitalize(selectedChat.chatName)}
+            </Typography>
+            <CloseIcon
+              onClick={() => setOpen(false)}
+              style={{ cursor: "pointer" }}
+            />
           </Header>
           <SelectedUsersContainer>
             {selectedChat &&
@@ -211,7 +229,7 @@ const EditDetails = ({
                   </Button>
                 ))}
           </SelectedUsersContainer>
-          <Box component="form" sx={{ mt: 1 }} style={{ marginTop: "-20px"}}>
+          <Box component="form" sx={{ mt: 1 }} style={{ marginTop: "-20px" }}>
             <TextField
               margin="normal"
               required
@@ -238,11 +256,18 @@ const EditDetails = ({
             {loading ? (
               <Loading dimensions="20" marginTop="5%" />
             ) : (
-              searchResult && searchResult.slice(0, 4).map((data) => <UserListItem key={data._id} data={data} />)
+              searchResult &&
+              searchResult
+                .slice(0, 4)
+                .map((data) => <UserListItem key={data._id} data={data} />)
             )}
           </SearchListContainer>
           <Header>
-            <Button variant="contained" color="success" onClick={() => handleRename()}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleRename()}
+            >
               Update
             </Button>
             <Button
@@ -297,13 +322,12 @@ function SingleChat() {
       setLoading(false);
 
       socket.emit("joinchat", selectedChat._id);
-      
     } catch (error) {
       toast.error("Failed to Load the Messages");
     }
   };
 
-   const sendMessage = async () => {
+  const sendMessage = async () => {
     if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
@@ -328,13 +352,15 @@ function SingleChat() {
         toast("Error Occured! Failed to send the Message");
       }
     }
-  }
+  };
 
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", (userId) => {if(userId !== user._id) setIsTyping(true);});
+    socket.on("typing", (userId) => {
+      if (userId !== user._id) setIsTyping(true);
+    });
     socket.on("stop typing", () => setIsTyping(false));
 
     // eslint-disable-next-line
@@ -348,30 +374,32 @@ function SingleChat() {
   }, [selectedChat]);
 
   useEffect(() => {
-    if(socket){socket.on("message recieved", (newMessageRecieved) => {
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare._id !== newMessageRecieved.chat._id
-      ) {
-        if (!notification.includes(newMessageRecieved)) {
-          setNotification([newMessageRecieved, ...notification]);
-          setFetchAgain(!fetchAgain);
+    if (socket) {
+      socket.on("message recieved", (newMessageRecieved) => {
+        if (
+          !selectedChatCompare ||
+          selectedChatCompare._id !== newMessageRecieved.chat._id
+        ) {
+          if (!notification.includes(newMessageRecieved)) {
+            setNotification([newMessageRecieved, ...notification]);
+            setFetchAgain(!fetchAgain);
+          }
+        } else {
+          setMessages([...messages, newMessageRecieved]);
         }
-      } else {
-        setMessages([...messages, newMessageRecieved]);
-      }
-    });}
+      });
+    }
   });
 
-  const typingHandler = (e) => { 
+  const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
-    if (!socketConnected){
-      return
+    if (!socketConnected) {
+      return;
     }
 
-    if(!isTyping){
-      socket.emit('typing', selectedChat._id, user._id);
+    if (!isTyping) {
+      socket.emit("typing", selectedChat._id, user._id);
     }
 
     let lastTypingTime = new Date().getTime();
@@ -396,7 +424,10 @@ function SingleChat() {
             : getSender(selectedChat.users, user)}
         </Typography>{" "}
         {selectedChat.isGroupChat && (
-          <SettingsIcon onClick={() => setOpen(true)} style={{ cursor: "pointer"}} />
+          <SettingsIcon
+            onClick={() => setOpen(true)}
+            style={{ cursor: "pointer" }}
+          />
         )}{" "}
       </Header>
       {open && (
@@ -412,29 +443,56 @@ function SingleChat() {
           fetchMessages={fetchMessages}
         />
       )}
-
-      {loading ? "loading" : 
-        <Body><ChatContainer>
-          {messages.length && messages.map((msg, i) =>
-            <MessageOuterContainer>{(isSameSender(messages, msg, i, user._id) || isLastMessage(messages, i, user._id)) && <Avatar
-          alt={msg.sender.name ? msg.sender.name : msg.sender.firstName + " " + msg.sender.lastName}
-          src={msg.sender.pic ? msg.sender.pic : ""}
-          sx={{ width: 30, height: 30 }}
-        />}<Message sameUser={!isSameSender(messages, msg, i, user._id)} key={msg._id}>
-            <Content>{msg.content}</Content>
-            </Message></MessageOuterContainer> )}
-        </ChatContainer>
-        {isTyping && <div>
-          Typing</div>}
-        <MessageContainer><Input placeholder="Enter a message..." onChange={typingHandler} value={newMessage} style={{ width: "100%" }} />
-            <Button variant="contained" endIcon={<SendIcon />} onClick={() => sendMessage()}>
+      {loading ? (
+        <Loading marginTop="0%" />
+      ) : (
+        <Body>
+          <ChatContainer>
+            {messages.length ?
+              messages.map((msg, i) => (
+                <MessageOuterContainer>
+                  {(isSameSender(messages, msg, i, user._id) ||
+                    isLastMessage(messages, i, user._id)) && (
+                    <Avatar
+                      alt={
+                        msg.sender.name
+                          ? msg.sender.name
+                          : msg.sender.firstName + " " + msg.sender.lastName
+                      }
+                      src={msg.sender.pic ? msg.sender.pic : ""}
+                      sx={{ width: 30, height: 30 }}
+                    />
+                  )}
+                  <Message
+                    sameUser={!isSameSender(messages, msg, i, user._id)}
+                    key={msg._id}
+                  >
+                    <Content>{msg.content}</Content>
+                  </Message>
+                </MessageOuterContainer>
+              )) : EmptyChat()}
+          </ChatContainer>
+          {isTyping && <div>Typing</div>}
+          <MessageContainer>
+            <Input
+              placeholder="Enter a message..."
+              onChange={typingHandler}
+              value={newMessage}
+              style={{ width: "100%" }}
+            />
+            <Button
+              variant="contained"
+              endIcon={<SendIcon />}
+              onClick={() => sendMessage()}
+            >
               Send
             </Button>
-          </MessageContainer></Body>
-      }
+          </MessageContainer>
+        </Body>
+      )}
     </OuterContainer>
   ) : (
-    "Please select a chat"
+    EmptyChat()
   );
 }
 
@@ -468,12 +526,12 @@ const ModalContainer = styled.div`
 `;
 
 const SelectedUsersContainer = styled.div`
-display: flex;
-flex-wrap: wrap;
-gap: 4px;
-max-height: 138px;
-overflow-y: auto;
-overflow-x: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 138px;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const SearchListContainer = styled.div`
@@ -505,45 +563,55 @@ const UserDetail = styled.div`
 `;
 
 const ChatContainer = styled.div`
-display: flex;
-flex-direction: column-reverse;
-overflow-y: scroll;
-scrollbar-width: none;
-gap: 4px;
-height: 100%;
-width: 100%;
-align-items: flex-start;
-margin-bottom: 10px;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  gap: 4px;
+  height: 100%;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 10px;
 `;
 
 const MessageContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 2px;
-    border: 2px solid;
+  display: flex;
+  justify-content: space-between;
+  padding: 2px;
+  border: 2px solid;
 `;
 
 const Body = styled.div`
-height: 97%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  height: 97%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const Message = styled.div`
-width: 100%;
-display: flex;
-justify-content: ${({ sameUser }) => sameUser ? "flex-end" : "flex-start"};
+  width: 100%;
+  display: flex;
+  justify-content: ${({ sameUser }) => (sameUser ? "flex-end" : "flex-start")};
 `;
 
 const MessageOuterContainer = styled.div`
-width: 97%;
-display: flex;
-gap: 4px;
+  width: 97%;
+  display: flex;
+  gap: 4px;
 `;
 
 const Content = styled.div`
-border: 2px solid;
-padding: 3px;
-border-radius: 10px;
+  border: 2px solid;
+  padding: 3px;
+  border-radius: 10px;
+`;
+
+const EmptyContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
 `;

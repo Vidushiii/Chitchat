@@ -28,7 +28,6 @@ const HomePage = () => {
           Then, do join the room according to the GENRE you like and CHITCHAT.{" "}
           <BsArrowDownCircleFill />
         </SubHeading>
-        <Rooms />
       </HomeContainer>
     </>
   );

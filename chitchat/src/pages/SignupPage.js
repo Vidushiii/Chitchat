@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
@@ -19,31 +19,17 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { SignInContainer } from "../views/styles";
 import {useNavigate} from "react-router-dom";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 const theme = createTheme();
-
 
 export default function SignupPage() {
   const navigate = useNavigate();
 const [pic, setPic] = useState();
 const [loading, setLoading] = useState(false);
+
+useEffect(() => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (userInfo) navigate("/homepage");
+}, []);
 
 const createUrl = (picData) => {
   setLoading(true);
@@ -106,11 +92,11 @@ setLoading(false);
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs" style={{ background: "white" }}>
-        <CssBaseline />
+      <Container component="main" style={{ background: "white", padding: "40px 60px", height: "600px", marginTop: 80, width: "580px", border: "2px", borderRadius: "10px", boxShadow: "0px 2px 30px -2px #1565c0"}}>
+      
         <Box
           sx={{
-            marginTop: 8,
+            //marginTop: "8px !!important",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -218,7 +204,6 @@ setLoading(false);
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

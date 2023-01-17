@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React,{ useState } from "react";
 import { Heading, Header, RoomInfoCard, RoomLogo } from "../views/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";

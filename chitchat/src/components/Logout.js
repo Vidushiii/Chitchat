@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
-function Logout({ open, setOpen, user }) {
+function Logout({ open, setOpen }) {
 
     const navigate = useNavigate();
 
@@ -29,10 +29,10 @@ function Logout({ open, setOpen, user }) {
     >
       <Fade in={open}>
         <OuterContainer>
-          <Typography textAlign="center">Do you wanna logout?</Typography>
+          <Typography variant="h6" textAlign="center" color="primary">Do you want to logout?</Typography>
           <Container>
-            <Button onClick={() => logoutHandler()}>Yes</Button>
-            <Button onClick={setOpen}>No</Button>
+            <Button variant="contained" onClick={() => logoutHandler()}>Yes</Button>
+            <Button variant="contained" onClick={setOpen}>No</Button>
           </Container>
         </OuterContainer>
       </Fade>
@@ -48,7 +48,7 @@ const OuterContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  border: 2px solid #726969;
+  border: 2px solid #0080ff;
   padding: 20px;
   color: black;
   background: white;

@@ -11,7 +11,7 @@ function ChatBox() {
 export default ChatBox;
 
 const OuterContainer = styled.div`
-border: 2px solid;
+border: 2px solid lightgray;
 width: 67%;
 height: 82vh;
 padding: 10px;

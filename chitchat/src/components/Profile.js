@@ -21,15 +21,16 @@ function Profile({ open, setOpen, user }) {
     >
       <Fade in={open}>
         <OuterContainer>
-          <Typography textAlign="center">
-            {user.name} || {user.firstName} {user.lastName}
+          <Typography variant="h5" textAlign="center" color="primary">
+            {user.name ? user.name : user.firstName + " " + user.lastName}
           </Typography>
           <Avatar
             alt={user && user.firstName}
             src={user && user.pic ? user.pic : ""}
-            sx={{ width: 100, height: 100, marginLeft: "40%" }}
+            sx={{ width: 120, height: 120, marginLeft: "36%" }}
+            style={{ boxShadow: "0px 0px 20px -3px #0080ff" }}
           />
-          <Typography textAlign="center">Email : {user.email}</Typography>
+          <Typography variant="body1" textAlign="center" color="primary">Email : {user.email}</Typography>
         </OuterContainer>
       </Fade>
     </Modal>
@@ -44,12 +45,12 @@ const OuterContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  border: 2px solid #726969;
+  border: 2px solid #0080ff;
   padding: 30px 30px 40px 30px;
   color: black;
   background: white;
   border-radius: 20px;
   display:flex;
-  gap: 15px;
+  gap: 25px;
   flex-direction: column;
 `;
