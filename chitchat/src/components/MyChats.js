@@ -13,7 +13,14 @@ import { getSender, getSenderPic } from "../config/appLogic";
 import { capitalize, truncate } from "lodash";
 
 function MyChats() {
-  const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState();
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    chats,
+    setChats,
+    fetchAgain,
+  } = ChatState();
 
   const [open, setOpen] = useState(false);
 
@@ -49,7 +56,7 @@ function MyChats() {
 
   useEffect(() => {
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <OuterContainer>

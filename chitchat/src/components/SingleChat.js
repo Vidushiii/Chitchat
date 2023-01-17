@@ -51,6 +51,7 @@ const EditDetails = ({
     capitalize(selectedChat.chatName)
   );
   const [search, setSearch] = useState("");
+
   const handleSearch = async (query) => {
     setSearch(query);
     if (!query) {
@@ -67,6 +68,7 @@ const EditDetails = ({
       const { data } = await axios.get(`/api/user?search=${search}`, config);
       setLoading(false);
       setSearchResult(data);
+      setSearch("");
     } catch (error) {
       toast.error("Failed to Load the Search Results");
       setLoading(false);
@@ -95,6 +97,7 @@ const EditDetails = ({
       setSelectedChat(data);
       setFetchAgain(!fetchAgain);
       setRenameLoading(false);
+      setOpen(false);
     } catch (error) {
       toast.error(error.response.data.message);
       setRenameLoading(false);
@@ -257,9 +260,9 @@ const EditDetails = ({
               <Loading dimensions="20" marginTop="5%" />
             ) : (
               searchResult &&
-              searchResult
-                .slice(0, 4)
-                .map((data) => <UserListItem key={data._id} data={data} />)
+              searchResult.map((data) => (
+                <UserListItem key={data._id} data={data} />
+              ))
             )}
           </SearchListContainer>
           <Header>
@@ -368,7 +371,6 @@ function SingleChat() {
 
   useEffect(() => {
     fetchMessages();
-
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
@@ -417,7 +419,7 @@ function SingleChat() {
   return selectedChat ? (
     <OuterContainer>
       {" "}
-      <Header>
+      <Header background>
         <Typography style={{ color: "white" }}>
           {selectedChat.isGroupChat
             ? capitalize(selectedChat.chatName)
@@ -449,44 +451,43 @@ function SingleChat() {
         <Body>
           <ChatContainer>
             {messages.length
-              ? messages.slice(0).reverse().map((msg, i) => (
-                  <MessageOuterContainer
-                    space={
-                      msg.sender._id !== user._id &&
-                      !(
-                        isSameSender(messages, msg, i, user._id) ||
-                        isLastMessage(messages, i, user._id)
-                      )
-                    }
-                  >
-                    {msg.sender._id !== user._id && (isSameSender(messages, msg, i, user._id) ||
-                      isLastMessage(messages, i, user._id)) && (
-                      <Avatar
-                        alt={
-                          msg.sender.name
-                            ? msg.sender.name
-                            : msg.sender.firstName + " " + msg.sender.lastName
-                        }
-                        src={msg.sender.pic ? msg.sender.pic : ""}
-                        sx={{ width: 30, height: 30 }}
-                        style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
-                      />
-                    )}
-                    <Message
-                      sameUser={msg.sender._id === user._id}
-                      key={msg._id}
+              ? messages
+                  .slice(0)
+                  .reverse()
+                  .map((msg, i) => (
+                    <MessageOuterContainer
+                      space={
+                        msg.sender._id !== user._id &&
+                        !(
+                          isSameSender(messages, msg, i, user._id) ||
+                          isLastMessage(messages, i, user._id)
+                        )
+                      }
                     >
-                      <Content>
-                        {msg.content}
-                        {console.log(
-                          "same sender",
-                          isSameSender(messages, msg, i, user._id),
-                          msg
+                      {msg.sender._id !== user._id &&
+                        (isSameSender(messages, msg, i, user._id) ||
+                          isLastMessage(messages, i, user._id)) && (
+                          <Avatar
+                            alt={
+                              msg.sender.name
+                                ? msg.sender.name
+                                : msg.sender.firstName +
+                                  " " +
+                                  msg.sender.lastName
+                            }
+                            src={msg.sender.pic ? msg.sender.pic : ""}
+                            sx={{ width: 30, height: 30 }}
+                            style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
+                          />
                         )}
-                      </Content>
-                    </Message>
-                  </MessageOuterContainer>
-                ))
+                      <Message
+                        sameUser={msg.sender._id === user._id}
+                        key={msg._id}
+                      >
+                        <Content>{msg.content}</Content>
+                      </Message>
+                    </MessageOuterContainer>
+                  ))
               : EmptyChat()}
           </ChatContainer>
           {isTyping && <div>Typing</div>}
@@ -521,12 +522,12 @@ const OuterContainer = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  background: #1976d2;
+  background: ${({ background }) => background && "#1976d2"};
   margin: -1px -1px 0px -1px;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   padding: 12px;
-  border: 2px solid #1976d2;
+  border: ${({ background }) => background && "2px solid #1976d2"};
   align-items: center;
 `;
 

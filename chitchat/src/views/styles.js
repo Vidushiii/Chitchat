@@ -32,7 +32,6 @@ export const StyledNavLink = styled(NavLink)`
   cursor: pointer;
   font-size: 20px;
   line-height: 15px;
-  font-family: cursive;
   &.active {
     font-weight: 600;
     color: white;
@@ -47,16 +46,14 @@ export const SubHeading = styled.div`
   border-radius: 10px;
   padding: 20px;
   margin: 3% 0%;
-  font-size: 18px;
-  line-height: 15px;
-  font-family: cursive;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 export const Heading = styled.div`
   font-size: ${({ size }) => (size ? size : "25px")};
   text-decoration: ${({ decoration }) => decoration && "underline"};
-  line-height: 15px;
-  font-family: cursive;
   margin-left: 10px;
   cursor: ${({ pointer }) => pointer && "pointer"};
 `;
@@ -100,6 +97,7 @@ export const InlineSection = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  margin: 0px 20px;
 `;
 
 export const Search = styled.div`
