@@ -13,8 +13,7 @@ export default ChatBox;
 const OuterContainer = styled.div`
 border: 2px solid lightgray;
 width: 67%;
-height: 82vh;
-padding: 10px;
+height: 84.7vh;
 border-radius: 10px;
 display: flex;
 flex-direction: column;

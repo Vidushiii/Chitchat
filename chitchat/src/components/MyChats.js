@@ -6,9 +6,11 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
+import { Avatar } from "@mui/material";
 import Loading from "./Loading";
 import GroupChatModal from "./GroupChatModal";
-import { getSender } from "../config/appLogic";
+import { getSender, getSenderPic } from "../config/appLogic";
+import { capitalize, truncate } from "lodash";
 
 function MyChats() {
   const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState();
@@ -28,6 +30,21 @@ function MyChats() {
     } catch (error) {
       toast.error("Failed to Load the chats");
     }
+  };
+
+  const getName = (chatData) => {
+    return !chatData.isGroupChat
+      ? getSender(chatData.users, user)
+      : chatData.chatName;
+  };
+
+  const getSelectedChatName = () => {
+    return (
+      selectedChat &&
+      (selectedChat.isGroupChat
+        ? selectedChat.chatName
+        : getSender(selectedChat && selectedChat.users, user))
+    );
   };
 
   useEffect(() => {
@@ -50,14 +67,33 @@ function MyChats() {
       </Header>
       <ChatsContainer>
         {chats ? (
-          chats.map((i) => (
-            <ChatCard key={i._id} onClick={() => setSelectedChat(i)}>
-              <Typography>
-                {!i.isGroupChat ? getSender(i.users, user) : i.chatName}
-              </Typography>
-              <Typography>Msg : </Typography>
-            </ChatCard>
-          ))
+          chats.map(
+            (i) =>
+              i.users && (
+                <ChatCard
+                  key={i._id}
+                  onClick={() => setSelectedChat(i)}
+                  selected={getSelectedChatName() === getName(i)}
+                >
+                  <Avatar
+                    alt={capitalize(getName(i))}
+                    src={!i.isGroupChat && (getSenderPic(i.users, user) || "")}
+                    sx={{ width: 40, height: 40 }}
+                    style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
+                  />
+                  <Content>
+                    <Typography>{capitalize(getName(i))}</Typography>
+                    <Typography style={{ color: "gray" }}>
+                      {i.latestMessage
+                        ? truncate(i.latestMessage.content, {
+                            length: 40,
+                          })
+                        : "Start chatting.."}
+                    </Typography>
+                  </Content>
+                </ChatCard>
+              )
+          )
         ) : (
           <Loading />
         )}
@@ -103,8 +139,19 @@ const ChatsContainer = styled.div`
 `;
 
 const ChatCard = styled.div`
-  border-bottom: 2px solid lightgray;
-  padding: 5px;
+  border-bottom: 2px solid lightblue;
+  padding: 10px;
   cursor: pointer;
+  background: ${({ selected }) => selected && "#def7ff"};
+  border-radius: ${({ selected }) => selected && "10px"};
   margin-right: 5px;
+  display: flex;
+  gap: 4%;
+  align-items: center;
+  &:hover {
+    background: #91d7ed;
+    border-radius: 10px;
+  }
 `;
+
+const Content = styled.div``;

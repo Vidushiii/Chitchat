@@ -23,7 +23,7 @@ export const NavbarContainer = styled.div`
   display: flex;
   align-items: center;
   background: #1565c0;
-  width: 98.5%;
+  width: 99%;
   justify-content: space-between;
 `;
 
@@ -97,7 +97,15 @@ export const RoomLogo = styled.div`
 `;
 
 export const InlineSection = styled.div`
-display: flex;
-align-items: center;
-gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
+export const Search = styled.div`
+  width: 130px;
+  border-bottom: 2px solid white;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
 `;

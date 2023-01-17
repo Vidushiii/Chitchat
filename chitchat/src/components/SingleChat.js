@@ -418,7 +418,7 @@ function SingleChat() {
     <OuterContainer>
       {" "}
       <Header>
-        <Typography>
+        <Typography style={{ color: "white" }}>
           {selectedChat.isGroupChat
             ? capitalize(selectedChat.chatName)
             : getSender(selectedChat.users, user)}
@@ -426,7 +426,7 @@ function SingleChat() {
         {selectedChat.isGroupChat && (
           <SettingsIcon
             onClick={() => setOpen(true)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", color: "white" }}
           />
         )}{" "}
       </Header>
@@ -448,29 +448,46 @@ function SingleChat() {
       ) : (
         <Body>
           <ChatContainer>
-            {messages.length ?
-              messages.map((msg, i) => (
-                <MessageOuterContainer>
-                  {(isSameSender(messages, msg, i, user._id) ||
-                    isLastMessage(messages, i, user._id)) && (
-                    <Avatar
-                      alt={
-                        msg.sender.name
-                          ? msg.sender.name
-                          : msg.sender.firstName + " " + msg.sender.lastName
-                      }
-                      src={msg.sender.pic ? msg.sender.pic : ""}
-                      sx={{ width: 30, height: 30 }}
-                    />
-                  )}
-                  <Message
-                    sameUser={!isSameSender(messages, msg, i, user._id)}
-                    key={msg._id}
+            {messages.length
+              ? messages.slice(0).reverse().map((msg, i) => (
+                  <MessageOuterContainer
+                    space={
+                      msg.sender._id !== user._id &&
+                      !(
+                        isSameSender(messages, msg, i, user._id) ||
+                        isLastMessage(messages, i, user._id)
+                      )
+                    }
                   >
-                    <Content>{msg.content}</Content>
-                  </Message>
-                </MessageOuterContainer>
-              )) : EmptyChat()}
+                    {msg.sender._id !== user._id && (isSameSender(messages, msg, i, user._id) ||
+                      isLastMessage(messages, i, user._id)) && (
+                      <Avatar
+                        alt={
+                          msg.sender.name
+                            ? msg.sender.name
+                            : msg.sender.firstName + " " + msg.sender.lastName
+                        }
+                        src={msg.sender.pic ? msg.sender.pic : ""}
+                        sx={{ width: 30, height: 30 }}
+                        style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
+                      />
+                    )}
+                    <Message
+                      sameUser={msg.sender._id === user._id}
+                      key={msg._id}
+                    >
+                      <Content>
+                        {msg.content}
+                        {console.log(
+                          "same sender",
+                          isSameSender(messages, msg, i, user._id),
+                          msg
+                        )}
+                      </Content>
+                    </Message>
+                  </MessageOuterContainer>
+                ))
+              : EmptyChat()}
           </ChatContainer>
           {isTyping && <div>Typing</div>}
           <MessageContainer>
@@ -484,9 +501,7 @@ function SingleChat() {
               variant="contained"
               endIcon={<SendIcon />}
               onClick={() => sendMessage()}
-            >
-              Send
-            </Button>
+            />
           </MessageContainer>
         </Body>
       )}
@@ -504,9 +519,15 @@ const OuterContainer = styled.div`
 `;
 
 const Header = styled.div`
-  width: 100%;
   display: flex;
   justify-content: space-between;
+  background: #1976d2;
+  margin: -1px -1px 0px -1px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  padding: 12px;
+  border: 2px solid #1976d2;
+  align-items: center;
 `;
 
 const ModalContainer = styled.div`
@@ -564,25 +585,34 @@ const UserDetail = styled.div`
 
 const ChatContainer = styled.div`
   display: flex;
-  flex-direction: column-reverse;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  gap: 4px;
-  height: 100%;
-  width: 100%;
+  gap: 6px;
+  height: 86%;
   align-items: flex-start;
-  margin-bottom: 10px;
+  padding: 10px;
+  justify-content: flex-start;
+  overflow: auto;
+  flex-direction: column-reverse;
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: lightgray;
+  }
 `;
 
 const MessageContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 2px;
-  border: 2px solid;
+  gap: 5px;
+  border: 2px solid lightgray;
+  border-radius: 10px;
+  margin: 8px;
+  padding: 5px;
+  box-shadow: 0px 0px 10px -3px #0080ff;
 `;
 
 const Body = styled.div`
-  height: 97%;
+  height: 92%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -595,15 +625,23 @@ const Message = styled.div`
 `;
 
 const MessageOuterContainer = styled.div`
-  width: 97%;
   display: flex;
   gap: 4px;
+  width: ${({ space }) => !space && "100%"};
+  margin-left: ${({ space }) => space && "34px"};
 `;
 
 const Content = styled.div`
-  border: 2px solid;
-  padding: 3px;
+  padding: 5px 8px;
   border-radius: 10px;
+  background: #def7ff;
+  display: flex;
+  align-items: center;
+  &:hover {
+    background: #91d7ed;
+  }
+  overflow-wrap: anywhere;
+  max-width: 82%;
 `;
 
 const EmptyContainer = styled.div`

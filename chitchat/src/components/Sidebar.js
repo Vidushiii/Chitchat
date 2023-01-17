@@ -5,12 +5,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Avatar } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { getName } from "../config/appLogic";
 import Loading from "./Loading";
 import { ChatState } from "../context/chatProvider";
+import capitalize from "lodash.capitalize";
 
 function Sidebar({ open, setOpen, user }) {
   const { setSelectedChat, chats, setChats } = ChatState();
@@ -56,19 +57,9 @@ function Sidebar({ open, setOpen, user }) {
     }
   };
 
-  const getSearchResults = () => {
-    let time;
-    return () => {
-      clearTimeout(time);
-      time = setTimeout(() => console.log("in"), 2000);
-    };
-  };
-
   useEffect(() => {
     if (!search) {
       getUserData();
-    } else {
-      getSearchResults();
     }
   }, [search]);
 
@@ -99,13 +90,13 @@ function Sidebar({ open, setOpen, user }) {
         }}
       >
         <Avatar
-          alt={data.name}
+          alt={capitalize(getName(data))}
           src={data.pic ? data.pic : ""}
           sx={{ width: 40, height: 40 }}
         />
         <UserDetail>
           <Typography>
-            {data.name ? data.name : data.firstName + " " + data.lastName}
+            {capitalize(getName(data))}
           </Typography>
           <Typography>{data.email}</Typography>
         </UserDetail>
@@ -117,7 +108,7 @@ function Sidebar({ open, setOpen, user }) {
     <Drawer anchor="left" open={open} onClose={setOpen}>
       <MainContainer>
         <Header>
-          <Typography variant="h5" textAlign="center">
+          <Typography variant="h5" textAlign="center" color="primary">
             Search User
           </Typography>
           <Search>
@@ -136,6 +127,7 @@ function Sidebar({ open, setOpen, user }) {
               }}
               variant="standard"
             />
+            <Button variant="contained" onClick={() => handleSearch()}>Go</Button>
           </Search>
         </Header>
         <BottomContainer>
@@ -159,6 +151,13 @@ const MainContainer = styled.div`
   flex-direction: column;
   gap: 15px;
   width: 300px;
+  overflow: auto;
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: lightgray;
+  }
 `;
 
 const Header = styled.div`
@@ -170,7 +169,7 @@ const Header = styled.div`
   top: 0;
   z-index: 1;
   padding: 10px;
-  width: 272px;
+  width: 285px;
 `;
 
 const BottomContainer = styled.div`
@@ -194,8 +193,7 @@ const UserCard = styled.div`
   gap: 15px;
   align-items: center;
   cursor: pointer;
-  border: 2px solid;
-  border-radius: 10px;
+  border-bottom: 2px solid lightblue;
 `;
 
 const UserDetail = styled.div`

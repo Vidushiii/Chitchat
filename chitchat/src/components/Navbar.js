@@ -4,12 +4,14 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
+import SearchIcon from "@mui/icons-material/Search";
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { NavbarContainer, StyledNavLink, InlineSection } from "../views/styles";
+import { NavbarContainer, StyledNavLink, InlineSection, Search } from "../views/styles";
 import { ChatState } from "../context/chatProvider";
 import Profile from "./Profile";
 import Logout from "./Logout";
+import Sidebar from "./Sidebar";
 
 const Navbar = () => {
   const { user } = ChatState();
@@ -17,7 +19,8 @@ const Navbar = () => {
 
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false); 
-  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showSearchSidebar, setShowSearchSidebar] = useState(false);
 
   const settings = [
     {id: "profile",
@@ -40,10 +43,14 @@ const Navbar = () => {
     <>
       <NavbarContainer>
         <InlineSection>
-          <BsChatTextFill style={{ color: "white", fontSize: "1.5em" }} />
+        <BsChatTextFill style={{ color: "white", fontSize: "1.5em"}} />
         <StyledNavLink to={pathname === "/homepage" ? "/myChats" : "/"}>{pathname === "/homepage" ? "My Chats" : "Home"}</StyledNavLink>
         </InlineSection>
         <InlineSection>
+        {pathname !== "/homepage" && <Search onClick={() => setShowSearchSidebar(true)}>
+              <SearchIcon style={{ color: "white", fontSize: "1.5em" }} />
+              <Typography variant="body2" style={{ color: "#f6e8e8"}}>Search User...</Typography>
+            </Search> }
             <NotificationsActiveIcon style={{ color: "white",  }} />
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} style={{ boxShadow: "0px 0px 20px -3px white" }}>
                 <Avatar alt={user && user.firstName} src={user && user.pic ? user.pic : ''} />
@@ -74,6 +81,13 @@ const Navbar = () => {
 
            {showProfileModal && <Profile open={showProfileModal} setOpen={() => setShowProfileModal(false)} user={user} />}
         {showLogoutModal && <Logout open={showLogoutModal} setOpen={() => setShowLogoutModal(false)} user={user} />}
+        {showSearchSidebar && (
+        <Sidebar
+          open={showSearchSidebar}
+          setOpen={() => setShowSearchSidebar(false)}
+          user={user}
+        />
+      )}
       </NavbarContainer>
     </>
   );

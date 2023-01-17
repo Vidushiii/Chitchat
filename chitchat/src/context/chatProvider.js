@@ -17,7 +17,6 @@ const ChatProvider = ({ children }) => {
     if(!user){
     setUser(userInfo);}
   }, [user]);
-console.log("provider user", user);
   return (
     <ChatContext.Provider
       value={{
