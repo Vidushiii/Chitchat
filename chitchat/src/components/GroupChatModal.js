@@ -5,7 +5,7 @@ import Loading from './Loading';
 import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast, Slide } from "react-toastify";
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
@@ -159,6 +159,13 @@ const GroupChatModal= ({ open, setOpen}) => {
           </Button>
         </CreateChat>
       </Fade>
+      <ToastContainer
+        position={toast.POSITION.TOP_RIGHT}
+        autoClose={3000}
+        transition={Slide}
+        theme="light"
+        draggable
+      />
     </Modal>
   )
 }

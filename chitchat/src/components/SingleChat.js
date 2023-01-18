@@ -14,7 +14,7 @@ import { Avatar } from "@mui/material";
 import capitalize from "lodash.capitalize";
 import { ChatState } from "../context/chatProvider";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import Loading from "./Loading";
 import SendIcon from "@mui/icons-material/Send";
 import { getSender, isSameSender, isLastMessage } from "../config/appLogic";
@@ -46,7 +46,6 @@ const EditDetails = ({
 }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [renameloading, setRenameLoading] = useState(false);
   const [groupChatName, setGroupChatName] = useState(
     capitalize(selectedChat.chatName)
   );
@@ -79,7 +78,6 @@ const EditDetails = ({
     if (!groupChatName) return;
 
     try {
-      setRenameLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -96,11 +94,9 @@ const EditDetails = ({
       setSelectedChat("");
       setSelectedChat(data);
       setFetchAgain(!fetchAgain);
-      setRenameLoading(false);
       setOpen(false);
     } catch (error) {
       toast.error(error.response.data.message);
-      setRenameLoading(false);
     }
     setGroupChatName("");
   };
@@ -352,7 +348,7 @@ function SingleChat() {
         setMessages([...messages, data]);
         socket.emit("new message", data);
       } catch (error) {
-        toast("Error Occured! Failed to send the Message");
+        toast.error("Error Occured! Failed to send the Message");
       }
     }
   };
@@ -506,6 +502,13 @@ function SingleChat() {
           </MessageContainer>
         </Body>
       )}
+      <ToastContainer
+        position={toast.POSITION.TOP_RIGHT}
+        autoClose={3000}
+        transition={Slide}
+        theme="light"
+        draggable
+      />
     </OuterContainer>
   ) : (
     EmptyChat()

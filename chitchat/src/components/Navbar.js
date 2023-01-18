@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BsChatTextFill } from "react-icons/bs";
 import { truncate } from "lodash";
 import IconButton from "@mui/material/IconButton";

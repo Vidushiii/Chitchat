@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { ChatState } from "../context/chatProvider";
 import MyChats from "../components/MyChats";
-import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";
 import Navbar from "../components/Navbar";
 

@@ -1,13 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-  import axios from 'axios';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -53,6 +50,7 @@ useEffect(() => {
     
     } catch (error) {
     setLoading(false);
+    toast.error("Invalid credentials!")
     }
     
   };
@@ -75,7 +73,6 @@ useEffect(() => {
             backgroundPosition: 'center',
           }}>
           </Grid>
-        <ToastContainer />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -86,6 +83,7 @@ useEffect(() => {
               alignItems: 'center',
             }}
           >
+            
             <Typography variant="h3" component="h2" color="primary" mb={5} >
               CHITCHAT
             </Typography>

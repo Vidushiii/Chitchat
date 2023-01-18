@@ -1,9 +1,8 @@
 import React, { useState, useEffect} from "react";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast, Slide } from "react-toastify";
 import axios from 'axios';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -204,6 +203,13 @@ setLoading(false);
             </Grid>
           </Box>
         </Box>
+        <ToastContainer
+        position={toast.POSITION.TOP_RIGHT}
+        autoClose={3000}
+        transition={Slide}
+        theme="light"
+        draggable
+      />
       </Container>
     </ThemeProvider>
   );

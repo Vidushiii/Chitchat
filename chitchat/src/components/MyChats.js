@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../context/chatProvider";
-import { toast } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import axios from "axios";
 import styled from "styled-components";
 import { Button } from "@mui/material";
@@ -23,9 +23,11 @@ function MyChats() {
   } = ChatState();
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchChats = async () => {
     try {
+      setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -34,6 +36,7 @@ function MyChats() {
 
       const { data } = await axios.get("/api/chat", config);
       setChats(data);
+      setLoading(false);
     } catch (error) {
       toast.error("Failed to Load the chats");
     }
@@ -73,7 +76,9 @@ function MyChats() {
         </Button>
       </Header>
       <ChatsContainer>
-        {chats ? (
+        {loading ? (
+          <Loading />
+        ) : chats.length > 0 ? (
           chats.map(
             (i) =>
               i.users && (
@@ -102,10 +107,19 @@ function MyChats() {
               )
           )
         ) : (
-          <Loading />
+          <Typography align="center" style={{ color: "gray", marginTop: "6%" }}>
+            "Select a user to start chatting.."
+          </Typography>
         )}
       </ChatsContainer>
       {open && <GroupChatModal open={open} setOpen={() => setOpen(false)} />}
+      <ToastContainer
+        position={toast.POSITION.TOP_RIGHT}
+        autoClose={3000}
+        transition={Slide}
+        theme="light"
+        draggable
+      />
     </OuterContainer>
   );
 }

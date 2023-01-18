@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Avatar, Button } from "@mui/material";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import { getName } from "../config/appLogic";
 import Loading from "./Loading";
 import { ChatState } from "../context/chatProvider";
@@ -139,6 +139,13 @@ function Sidebar({ open, setOpen, user }) {
           {loadingChat && !loading && <Loading />}
         </BottomContainer>
       </MainContainer>
+      <ToastContainer
+        position={toast.POSITION.TOP_RIGHT}
+        autoClose={3000}
+        transition={Slide}
+        theme="light"
+        draggable
+      />
     </Drawer>
   );
 }

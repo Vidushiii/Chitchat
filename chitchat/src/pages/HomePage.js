@@ -1,28 +1,19 @@
-import React, {useEffect }from "react";
-import axios from 'axios';
-import { BsArrowDownCircleFill } from "react-icons/bs";
+import React from "react";
 import { Typography } from "@mui/material";
 import Navbar from "../components/Navbar";
-import { Rooms } from "../components/Rooms";
 
 import { HomeContainer, SubHeading } from "../views/styles";
 
 const HomePage = () => {
-  const fetchData = async() => {
-    const { data } = await axios.get('/chats');
-  }
+
   const featuresData = [
     {content: "- Users have the ability to search for other users using their name and email."},
     {content: "- Users can create a group."},
     {content: "- Users can update group details like name, participants through settings icon on group chat."},
     {content: "- Group create/update modal supports user search and shows the list of existing members."},
-    {content: "- User will receive notification for each new message, if he is not in that specific chat."},
+    {content: "- User will receive notification for each new message, if they are not in that specific chat."},
     {content: "- After clicking on notification, user will be redirected to specific chat."}
   ];
-
-  useEffect(() => {
-    fetchData();
-  },[])
 
   return (
     <>
