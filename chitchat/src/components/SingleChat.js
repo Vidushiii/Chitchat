@@ -17,7 +17,12 @@ import axios from "axios";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import Loading from "./Loading";
 import SendIcon from "@mui/icons-material/Send";
-import { getSender, isSameSender, isLastMessage } from "../config/appLogic";
+import {
+  getSender,
+  isSameSender,
+  isLastMessage,
+  getSenderPic,
+} from "../config/appLogic";
 import io from "socket.io-client";
 
 const ENDPOINT = "localhost:5000";
@@ -416,11 +421,27 @@ function SingleChat() {
     <OuterContainer>
       {" "}
       <Header background>
-        <Typography style={{ color: "white" }}>
-          {selectedChat.isGroupChat
-            ? capitalize(selectedChat.chatName)
-            : getSender(selectedChat.users, user)}
-        </Typography>{" "}
+        <InlineSection>
+          <Avatar
+            alt={capitalize(
+              !selectedChat.isGroupChat
+                ? getSender(selectedChat.users, user)
+                : selectedChat.chatName
+            )}
+            src={
+              selectedChat.isGroupChat
+                ? ""
+                : getSenderPic(selectedChat.users, user) || ""
+            }
+            sx={{ width: 40, height: 40 }}
+            style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
+          />
+          <Typography style={{ color: "white" }}>
+            {selectedChat.isGroupChat
+              ? capitalize(selectedChat.chatName)
+              : getSender(selectedChat.users, user)}
+          </Typography>
+        </InlineSection>
         {selectedChat.isGroupChat && (
           <SettingsIcon
             onClick={() => setOpen(true)}
@@ -452,17 +473,9 @@ function SingleChat() {
                   .reverse()
                   .map((msg, i) => (
                     <MessageOuterContainer
-                      space={
-                        msg.sender._id !== user._id &&
-                        !(
-                          isSameSender(messages, msg, i, user._id) ||
-                          isLastMessage(messages, i, user._id)
-                        )
-                      }
+                    
                     >
-                      {msg.sender._id !== user._id &&
-                        (isSameSender(messages, msg, i, user._id) ||
-                          isLastMessage(messages, i, user._id)) && (
+                      {msg.sender._id !== user._id &&(
                           <Avatar
                             alt={
                               msg.sender.name
@@ -616,7 +629,7 @@ const MessageContainer = styled.div`
 `;
 
 const Body = styled.div`
-  height: 92%;
+  height: 90%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -656,4 +669,10 @@ const EmptyContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 15px;
+`;
+
+const InlineSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;

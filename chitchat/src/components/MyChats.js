@@ -89,7 +89,7 @@ function MyChats() {
                 >
                   <Avatar
                     alt={capitalize(getName(i))}
-                    src={!i.isGroupChat && (getSenderPic(i.users, user) || "")}
+                    src={i.isGroupChat? "" : (getSenderPic(i.users, user) || "")}
                     sx={{ width: 40, height: 40 }}
                     style={{ boxShadow: "0px 0px 10px -3px #0080ff" }}
                   />

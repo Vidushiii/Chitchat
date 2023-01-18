@@ -80,7 +80,7 @@ try {
   setLoading(false);
   localStorage.setItem("userInfo", JSON.stringify(data));
   navigate('/homepage');
-
+  window. location. reload();
 } catch (error) {
 toast.error(error);
 setLoading(false);
@@ -175,14 +175,6 @@ setLoading(false);
                   />
                   <PhotoCamera />
                 </IconButton>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
               </Grid>
             </Grid>
             <Button

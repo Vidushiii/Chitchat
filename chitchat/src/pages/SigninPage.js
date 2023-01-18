@@ -47,6 +47,7 @@ useEffect(() => {
       setLoading(false);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate('/homepage');
+      window. location. reload();
     
     } catch (error) {
     setLoading(false);
