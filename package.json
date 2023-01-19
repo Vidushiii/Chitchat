@@ -1,0 +1,32 @@
+{
+  "name": "chitchat",
+  "version": "1.0.0",
+  "description": "It's a chatting app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vidushiii/Chitchat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vidushiii/Chitchat/issues"
+  },
+  "homepage": "https://github.com/Vidushiii/Chitchat#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "hbs": "4.2",
+    "joi": "17.6",
+    "joi-password-complexity": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.4",
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.5.4"
+  }
+}

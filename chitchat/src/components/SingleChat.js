@@ -25,7 +25,7 @@ import {
 } from "../config/appLogic";
 import io from "socket.io-client";
 
-const ENDPOINT = "localhost:5000";
+const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const EmptyChat = () => {
