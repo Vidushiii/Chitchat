@@ -17,4 +17,4 @@ Features :
 
 - After clicking on notification, user will be redirected to specific chat.
 
-Please watch the demo video : https://share.vidyard.com/watch/CXmezaCaLgMkgUXPgjkvWo?
+Please watch the demo video : https://share.vidyard.com/watch/CXmezaCaLgMkgUXPgjkvWo
